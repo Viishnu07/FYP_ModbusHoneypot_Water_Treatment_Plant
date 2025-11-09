@@ -239,7 +239,6 @@ docker-compose up -d --build
 
 | File | Purpose |
 |------|---------|
-| [QUICKSTART.md](QUICKSTART.md) | 5-minute setup guide |
 | [kali_scripts/README.md](kali_scripts/README.md) | Attack script documentation |
 
 ---
