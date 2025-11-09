@@ -4,7 +4,8 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Docker](https://img.shields.io/badge/docker-required-blue.svg)](https://www.docker.com/)
-[![License](https://img.shields.io/badge/license-Educational-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
 
 A realistic Modbus TCP simulator for water treatment plant process monitoring with an interactive HMI dashboard. Perfect for ICS security training, testing, and research.
 
