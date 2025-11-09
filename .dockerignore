@@ -1,0 +1,14 @@
+# Docker ignore file
+logs/
+.git
+.gitignore
+*.md
+Kali/
+kali_scripts/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.log
+*.json

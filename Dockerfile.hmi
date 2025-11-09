@@ -1,0 +1,21 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir flask pymodbus
+
+# Copy application files
+COPY hmi_dashboard.py .
+COPY templates templates/
+COPY static static/
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Expose Flask port
+EXPOSE 5000
+
+# Run the HMI dashboard
+CMD ["python", "hmi_dashboard.py"]

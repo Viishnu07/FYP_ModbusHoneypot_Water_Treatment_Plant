@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Custom Modbus Process Simulator - Water Treatment Plant
+  modbus_simulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.modbus
+    container_name: modbus_simulator
+    ports:
+      - "502:502"      # Modbus TCP
+    volumes:
+      - ./logs/modbus:/app/logs
+    environment:
+      - LOG_LEVEL=INFO
+    networks:
+      - ics_network
+    restart: unless-stopped
+
+  # HMI Dashboard - Flask web interface
+  hmi_dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.hmi
+    container_name: hmi_dashboard
+    ports:
+      - "5000:5000"    # Flask HMI dashboard
+    volumes:
+      - ./logs/hmi:/app/logs
+    environment:
+      - MODBUS_HOST=modbus_simulator
+      - MODBUS_PORT=502
+      - FLASK_ENV=production
+    networks:
+      - ics_network
+    depends_on:
+      - modbus_simulator
+    restart: unless-stopped
+
+networks:
+  ics_network:
+    driver: bridge
+
+volumes:
+  modbus_logs:
+  hmi_logs:

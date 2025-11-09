@@ -1,0 +1,19 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir pymodbus
+
+# Copy application
+COPY modbus_process_sim.py .
+
+# Create logs directory
+RUN mkdir -p logs
+
+# Expose Modbus port
+EXPOSE 502
+
+# Run the simulator
+CMD ["python", "modbus_process_sim.py"]
