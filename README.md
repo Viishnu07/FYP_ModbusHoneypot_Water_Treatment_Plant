@@ -8,7 +8,6 @@
 
 A realistic Modbus TCP simulator for water treatment plant process monitoring with an interactive HMI dashboard. Perfect for ICS security training, testing, and research.
 
-[Features](#features) • [Quick Start](#quick-start) • [Documentation](#documentation) • [Screenshots](#screenshots)
 
 </div>
 
