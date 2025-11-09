@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Treatment Plant - HMI Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .header .timestamp {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+        
+        .card-unit {
+            font-size: 16px;
+            color: #7f8c8d;
+            margin-left: 5px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-on {
+            background: #27ae60;
+            box-shadow: 0 0 10px #27ae60;
+        }
+        
+        .status-off {
+            background: #e74c3c;
+        }
+        
+        .gauge {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+        }
+        
+        .alert {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .alert.warning {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+        
+        .alert.danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏭 Water Treatment Plant Control System</h1>
+            <div class="timestamp">Last Update: <span id="lastUpdate">Loading...</span></div>
+        </div>
+        
+        <div id="dashboard" class="dashboard-grid">
+            <div class="loading">Loading process data...</div>
+        </div>
+    </div>
+    
+    <script>
+        function formatValue(value, decimals = 2) {
+            return parseFloat(value).toFixed(decimals);
+        }
+        
+        function updateDashboard(data) {
+            const dashboard = document.getElementById('dashboard');
+            const lastUpdate = document.getElementById('lastUpdate');
+            
+            lastUpdate.textContent = new Date(data.timestamp).toLocaleString();
+            
+            dashboard.innerHTML = `
+                <div class="card">
+                    <div class="card-title">
+                        <span class="status-indicator ${data.pump_status_raw === 1 ? 'status-on' : 'status-off'}"></span>
+                        Pump Status
+                    </div>
+                    <div class="card-value">${data.pump_status}</div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">💧 Chlorine Level</div>
+                    <div class="card-value">${formatValue(data.chlorine_ppm, 1)}<span class="card-unit">ppm</span></div>
+                    ${data.chlorine_ppm < 0.5 || data.chlorine_ppm > 4.0 ? 
+                        '<div class="alert danger">⚠️ Chlorine level out of normal range!</div>' : ''}
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">🧪 pH Level</div>
+                    <div class="card-value">${formatValue(data.ph_level, 2)}<span class="card-unit">pH</span></div>
+                    ${data.ph_level < 6.5 || data.ph_level > 8.5 ? 
+                        '<div class="alert warning">⚠️ pH level out of normal range!</div>' : ''}
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">📊 Water Level</div>
+                    <div class="card-value">${formatValue(data.water_level_cm, 0)}<span class="card-unit">cm</span></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">🌊 Flow Rate</div>
+                    <div class="card-value">${formatValue(data.flow_rate_lmin, 0)}<span class="card-unit">L/min</span></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">🌡️ Temperature</div>
+                    <div class="card-value">${formatValue(data.temperature_c, 1)}<span class="card-unit">°C</span></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">⚡ Pressure</div>
+                    <div class="card-value">${formatValue(data.pressure_psi, 1)}<span class="card-unit">PSI</span></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-title">💨 Turbidity</div>
+                    <div class="card-value">${formatValue(data.turbidity_ntu, 1)}<span class="card-unit">NTU</span></div>
+                </div>
+            `;
+        }
+        
+        function fetchData() {
+            fetch('/api/data')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        console.error('Error:', data.error);
+                        document.getElementById('dashboard').innerHTML = 
+                            '<div class="alert danger">Error loading data: ' + data.error + '</div>';
+                    } else {
+                        updateDashboard(data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('dashboard').innerHTML = 
+                        '<div class="alert danger">Connection error. Please check if Modbus simulator is running.</div>';
+                });
+        }
+        
+        // Fetch data immediately and then every 2 seconds
+        fetchData();
+        setInterval(fetchData, 2000);
+    </script>
+</body>
+</html>
+
