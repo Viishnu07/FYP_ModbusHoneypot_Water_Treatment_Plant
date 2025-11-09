@@ -20,7 +20,7 @@ A realistic Modbus TCP simulator for water treatment plant process monitoring wi
 - ⚠️ Only test on systems you own or have explicit permission to test
 - ⚠️ Never connect to or test against real industrial control systems
 - ⚠️ Deploy only in isolated, controlled network environments
-- ⚠️ The authors are not responsible for any misuse or damage
+- ⚠️ The author is not responsible for any misuse or damage
 
 ---
 
@@ -229,9 +229,6 @@ docker-compose up -d --build
 │   ├── modbus_read.py          # Read all registers
 │   ├── modbus_attack.py        # Attack simulation
 │   └── hmi_test.py             # HMI testing
-├── Kali/                       # Attack documentation
-│   ├── ATTACK_GUIDE.md
-│   └── KALI_ATTACK_SETUP.md
 ├── start.sh                    # Linux/Mac startup
 └── start.ps1                   # Windows startup
 ```
@@ -243,9 +240,7 @@ docker-compose up -d --build
 | File | Purpose |
 |------|---------|
 | [QUICKSTART.md](QUICKSTART.md) | 5-minute setup guide |
-| [PROJECT_INFO.md](PROJECT_INFO.md) | Technical deep dive |
 | [kali_scripts/README.md](kali_scripts/README.md) | Attack script documentation |
-| [CHANGELOG.md](CHANGELOG.md) | Version history |
 
 ---
 
